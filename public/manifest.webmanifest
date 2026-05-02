@@ -1,0 +1,17 @@
+{
+  "name": "Zodiac Insight",
+  "short_name": "Zodiac",
+  "description": "A minimal, premium daily horoscope experience.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0c14",
+  "theme_color": "#0b0c14",
+  "icons": [
+    {
+      "src": "/placeholder.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

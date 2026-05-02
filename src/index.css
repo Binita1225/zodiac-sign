@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Zodiac Insight — Minimal premium design system
+   All colors MUST be HSL. */
+
+@layer base {
+  :root {
+    /* Warm parchment light theme */
+    --background: 36 33% 97%;
+    --foreground: 230 25% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 230 25% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 25% 12%;
+
+    --primary: 230 35% 18%;
+    --primary-foreground: 36 33% 97%;
+
+    --secondary: 36 25% 92%;
+    --secondary-foreground: 230 25% 12%;
+
+    --muted: 36 20% 94%;
+    --muted-foreground: 230 10% 45%;
+
+    --accent: 270 55% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 36 15% 88%;
+    --input: 36 15% 88%;
+    --ring: 270 55% 65%;
+
+    --radius: 1rem;
+
+    /* Cosmic accents */
+    --gold: 38 70% 58%;
+    --plum: 280 40% 50%;
+    --aurora: 200 70% 60%;
+
+    /* Surfaces */
+    --surface: 36 30% 99%;
+    --surface-elev: 0 0% 100%;
+    --hairline: 230 15% 85%;
+
+    /* Gradients & shadows */
+    --gradient-cosmic: radial-gradient(1200px 600px at 10% -10%, hsl(270 60% 90% / 0.6), transparent 60%),
+                       radial-gradient(900px 500px at 110% 10%, hsl(38 80% 88% / 0.55), transparent 55%),
+                       radial-gradient(800px 600px at 50% 120%, hsl(200 70% 90% / 0.5), transparent 60%);
+    --gradient-text: linear-gradient(135deg, hsl(230 35% 18%), hsl(270 40% 35%));
+    --shadow-soft: 0 1px 2px hsl(230 25% 12% / 0.04), 0 8px 30px -12px hsl(230 25% 12% / 0.12);
+    --shadow-glow: 0 0 0 1px hsl(var(--accent) / 0.15), 0 20px 60px -20px hsl(var(--accent) / 0.45);
+    --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dark {
+    --background: 230 30% 6%;
+    --foreground: 36 30% 94%;
+
+    --card: 230 25% 9%;
+    --card-foreground: 36 30% 94%;
+
+    --popover: 230 28% 8%;
+    --popover-foreground: 36 30% 94%;
+
+    --primary: 36 30% 94%;
+    --primary-foreground: 230 30% 6%;
+
+    --secondary: 230 20% 14%;
+    --secondary-foreground: 36 30% 94%;
+
+    --muted: 230 18% 13%;
+    --muted-foreground: 230 10% 65%;
+
+    --accent: 270 70% 72%;
+    --accent-foreground: 230 30% 6%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 230 18% 16%;
+    --input: 230 18% 16%;
+    --ring: 270 70% 72%;
+
+    --gold: 38 80% 65%;
+    --plum: 280 60% 70%;
+    --aurora: 200 80% 70%;
+
+    --surface: 230 28% 8%;
+    --surface-elev: 230 25% 11%;
+    --hairline: 230 18% 18%;
+
+    --gradient-cosmic: radial-gradient(1200px 600px at 10% -10%, hsl(270 60% 25% / 0.5), transparent 60%),
+                       radial-gradient(900px 500px at 110% 10%, hsl(38 60% 25% / 0.35), transparent 55%),
+                       radial-gradient(800px 600px at 50% 120%, hsl(200 70% 25% / 0.4), transparent 60%);
+    --gradient-text: linear-gradient(135deg, hsl(36 30% 94%), hsl(270 60% 80%));
+    --shadow-soft: 0 1px 2px hsl(0 0% 0% / 0.4), 0 12px 40px -16px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 0 0 1px hsl(var(--accent) / 0.25), 0 20px 60px -20px hsl(var(--accent) / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: hsl(var(--accent) / 0.25);
+  }
+}
+
+@layer components {
+  .display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+  }
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .surface {
+    background-color: hsl(var(--surface-elev));
+    border: 1px solid hsl(var(--hairline));
+    box-shadow: var(--shadow-soft);
+  }
+  .hairline {
+    border-color: hsl(var(--hairline));
+  }
+  .glow-active {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+@layer utilities {
+  .bg-cosmic {
+    background-image: var(--gradient-cosmic);
+  }
+  .transition-smooth {
+    transition: all 400ms var(--transition-smooth, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+  .animate-fade-in {
+    animation: fade-in 500ms var(--transition-smooth) both;
+  }
+  .animate-slide-up {
+    animation: slide-up 600ms var(--transition-smooth) both;
+  }
+  .animate-float {
+    animation: float 14s ease-in-out infinite;
+  }
+  .animate-pulse-slow {
+    animation: pulse-slow 6s ease-in-out infinite;
+  }
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--foreground) / 0.06),
+      transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -20px, 0) scale(1.05); }
+}
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.85; }
+}
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
