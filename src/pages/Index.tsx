@@ -32,9 +32,9 @@ const Index = () => {
       <CosmicBackground hue={sign.hue} />
       <Navbar />
 
-      <main className="container py-12 md:py-20 space-y-16 md:space-y-24">
+      <main className="container py-12 md:py-6 space-y-16 md:space-y-10">
         {/* Hero */}
-        <section className="max-w-3xl">
+        <section className="max-w-3xl mx-auto text-center flex flex-col items-cente">
           <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-5 animate-fade-in">
             Zodiac Insight
           </div>
