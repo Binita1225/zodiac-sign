@@ -35,7 +35,7 @@ const Index = () => {
       <main className="container py-12 md:py-6 space-y-16 md:space-y-10">
         {/* Hero */}
         <section className="max-w-3xl mx-auto text-center flex flex-col items-cente">
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-5 animate-fade-in">
+          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-5 animate-zzde-in">
             Zodiac Insight
           </div>
           <h1 className="display text-5xl md:text-7xl leading-[1.05] animate-slide-up">
