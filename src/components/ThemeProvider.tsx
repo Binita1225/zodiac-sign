@@ -3,18 +3,16 @@ import { createContext, useContext, useEffect, useState } from "react";
 type Theme = "light" | "dark";
 const ThemeCtx = createContext<{ theme: Theme; toggle: () => void }>({ theme: "light", toggle: () => {} });
 
+// The initial class is set by an inline script in index.html (avoids a light flash on dark devices);
+// this just reads it back so React agrees.
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "light";
-    const stored = localStorage.getItem("zi-theme") as Theme | null;
-    if (stored) return stored;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  });
+  const [theme, setTheme] = useState<Theme>(() =>
+    document.documentElement.classList.contains("dark") ? "dark" : "light",
+  );
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("zi-theme", theme);
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    try { localStorage.setItem("zi-theme", theme); } catch { /* storage blocked */ }
   }, [theme]);
 
   return (

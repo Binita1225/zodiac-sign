@@ -1,5 +1,6 @@
+import Constellation from "./Constellation";
 import { ZodiacSign } from "@/data/zodiacs";
-import { cn } from "@/lib/utils";
+import { spotlight } from "@/lib/utils";
 
 interface Props {
   sign: ZodiacSign;
@@ -10,35 +11,29 @@ interface Props {
 
 export default function ZodiacCard({ sign, active, onClick, index = 0 }: Props) {
   const accent = `hsl(${sign.hue} 70% 60%)`;
-  const accentSoft = `hsl(${sign.hue} 80% 92%)`;
-  const accentSoftDark = `hsl(${sign.hue} 40% 18%)`;
 
   return (
     <button
       onClick={onClick}
+      onPointerMove={spotlight}
       style={{
         animationDelay: `${index * 35}ms`,
-        ['--sign-accent' as any]: accent,
-        ['--sign-soft' as any]: accentSoft,
-        ['--sign-soft-dark' as any]: accentSoftDark,
-      }}
-      className={cn(
-        "group relative text-left p-4 rounded-2xl surface transition-smooth animate-fade-in focus-ring",
-        "hover:-translate-y-0.5 hover:shadow-lg",
-        active && "glow-active scale-[1.03]"
-      )}
+        "--h": sign.hue,
+        ...(active && {
+          borderColor: `hsl(${sign.hue} 70% 60% / 0.7)`,
+          boxShadow: `0 0 0 1px hsl(${sign.hue} 70% 60% / 0.35), 0 20px 50px -25px hsl(${sign.hue} 75% 55% / 0.8)`,
+        }),
+      } as React.CSSProperties}
+      className="group text-left p-3 sm:p-4 rounded-xl surface card-hue spotlight hover:-translate-y-0.5 animate-fade-in focus-ring"
       aria-pressed={active}
     >
-      {/* Soft accent halo */}
-      <div
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-smooth"
-        style={{
-          background: `radial-gradient(120px 80px at 50% 0%, ${accent}22, transparent 70%)`,
-        }}
+      <Constellation
+        sign={sign.key}
+        className={`absolute right-1 top-1 -z-10 w-16 h-16 pointer-events-none transition-opacity duration-500 ${active ? "opacity-90" : "opacity-25 group-hover:opacity-80"}`}
       />
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3">
         <div
-          className="grid place-items-center w-10 h-10 rounded-full text-lg transition-smooth"
+          className="glyph shrink-0 grid place-items-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-lg transition-smooth"
           style={{
             background: `color-mix(in oklab, ${accent} 14%, transparent)`,
             color: accent,
@@ -49,12 +44,12 @@ export default function ZodiacCard({ sign, active, onClick, index = 0 }: Props) 
         </div>
         <div className="min-w-0">
           <div className="font-medium leading-tight">{sign.name}</div>
-          <div className="text-xs text-muted-foreground truncate">{sign.dates}</div>
+          <div className="text-[11px] sm:text-xs text-muted-foreground truncate">{sign.dates}</div>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between text-[11px] uppercase tracking-wider text-muted-foreground">
+      <div className="mt-3 flex items-center justify-between gap-2 text-[10px] sm:text-[11px] uppercase tracking-wide sm:tracking-wider text-muted-foreground">
         <span>{sign.element}</span>
-        <span className="opacity-60">{sign.tagline}</span>
+        <span className="opacity-60 truncate">{sign.tagline}</span>
       </div>
     </button>
   );

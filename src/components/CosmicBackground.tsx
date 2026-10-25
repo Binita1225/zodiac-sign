@@ -1,24 +1,26 @@
+import Starfield from "./Starfield";
+import { useTheme } from "./ThemeProvider";
+
 interface Props {
   hue?: number;
 }
 
+// Fixed sky behind the whole page: twinkling starfield plus two slow-drifting
+// nebula clouds, one tinted by the selected sign.
 export default function CosmicBackground({ hue }: Props) {
-  const tint = hue ?? 270;
+  const tint = hue ?? 292;
+  const { theme } = useTheme();
   return (
     <div aria-hidden className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 bg-cosmic" />
       <div
-        className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full blur-3xl opacity-40 animate-float transition-all duration-1000"
-        style={{ background: `radial-gradient(closest-side, hsl(${tint} 70% 60% / 0.22), transparent)` }}
+        className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vh] rounded-full blur-3xl animate-drift transition-[background] duration-1000"
+        style={{ background: `radial-gradient(closest-side, hsl(${tint} 70% 55% / ${theme === "dark" ? 0.16 : 0.1}), transparent)` }}
       />
       <div
-        className="absolute bottom-[-15%] right-[-10%] w-[42rem] h-[42rem] rounded-full blur-3xl opacity-35 animate-float transition-all duration-1000"
-        style={{ background: `radial-gradient(closest-side, hsl(${(tint + 60) % 360} 70% 60% / 0.2), transparent)`, animationDelay: "-7s" }}
+        className="absolute top-[35%] -right-[15%] w-[60vw] h-[70vh] rounded-full blur-3xl animate-drift"
+        style={{ background: `radial-gradient(closest-side, oklch(0.55 0.2 292 / ${theme === "dark" ? 0.14 : 0.08}), transparent)`, animationDelay: "-20s" }}
       />
-      <div
-        className="absolute top-1/3 right-1/4 w-[26rem] h-[26rem] rounded-full blur-3xl opacity-25 animate-pulse-slow transition-all duration-1000"
-        style={{ background: `radial-gradient(closest-side, hsl(${(tint + 180) % 360} 70% 60% / 0.18), transparent)` }}
-      />
+      <Starfield hue={tint} dark={theme === "dark"} />
     </div>
   );
 }
