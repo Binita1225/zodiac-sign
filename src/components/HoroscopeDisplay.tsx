@@ -1,9 +1,9 @@
+import { spotlight } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { ZodiacSign } from "@/data/zodiacs";
-import { fetchHoroscope, getCached, getCosmicAdvice, Horoscope, Period } from "@/lib/horoscope";
+import { getHoroscope, getCosmicAdvice, Horoscope, Period } from "@/lib/horoscope";
 import { Heart, Briefcase, Activity, Sparkles, Share2, Wand2, Eye } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
 import EnergyMetricsBar from "./EnergyMetricsBar";
 import ShareCard from "./ShareCard";
 
@@ -33,24 +33,16 @@ export default function HoroscopeDisplay({ sign }: Props) {
     setAdvice(null);
   }, [sign.key]);
 
-  // Fetch when revealed or period changes (only after first reveal)
+  // Generate when revealed or period changes. Readings are computed locally;
+  // the short pause just lets the reveal/skeleton animation breathe.
   useEffect(() => {
     if (!revealed) return;
-    let cancelled = false;
     setLoading(true);
-    fetchHoroscope(sign.key, period)
-      .then((d) => { if (!cancelled) setData(d); })
-      .catch(() => {
-        const cached = getCached(sign.key, period);
-        if (cached && !cancelled) {
-          setData({ ...cached, cached: true });
-          toast.message("Showing your last saved insight.");
-        } else if (!cancelled) {
-          toast.error("Couldn't load reading. Please try again.");
-        }
-      })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+    const t = setTimeout(() => {
+      setData(getHoroscope(sign.key, period));
+      setLoading(false);
+    }, 450);
+    return () => clearTimeout(t);
   }, [sign.key, period, revealed]);
 
   const onShare = () => {
@@ -65,7 +57,8 @@ export default function HoroscopeDisplay({ sign }: Props) {
   return (
     <section
       id="reading"
-      className="surface rounded-3xl p-6 md:p-10 animate-fade-in relative overflow-hidden"
+      onPointerMove={spotlight}
+      className="surface spotlight rounded-xl p-5 md:p-8 animate-fade-in overflow-hidden scroll-mt-24"
       key={sign.key}
       style={{
         backgroundImage: `radial-gradient(600px 200px at 100% 0%, hsl(${sign.hue} 70% 60% / 0.06), transparent 70%)`,
@@ -74,17 +67,12 @@ export default function HoroscopeDisplay({ sign }: Props) {
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3 flex items-center gap-2">
-            Your reading
-            {data?.cached && (
-              <span className="normal-case tracking-normal text-[10px] px-2 py-0.5 rounded-full border hairline text-muted-foreground">
-                Last updated insight
-              </span>
-            )}
-          </div>
-          <h2 className="display text-4xl md:text-5xl">
+          <p className="eyebrow mb-2">
+            <span className="tok-str">$</span> cat ./readings/{sign.key}.md
+          </p>
+          <h2 className="display text-3xl md:text-4xl">
             <span className="text-gradient">{sign.name}</span>
-            <span className="ml-3 text-2xl md:text-3xl text-muted-foreground" style={{ color: accent }}>{sign.symbol}</span>
+            <span className="glyph ml-3 text-2xl md:text-3xl text-muted-foreground" style={{ color: accent }}>{sign.symbol}</span>
           </h2>
           <div className="text-sm text-muted-foreground mt-2">
             {sign.dates} · {sign.element} · {sign.tagline}
@@ -92,15 +80,15 @@ export default function HoroscopeDisplay({ sign }: Props) {
         </div>
 
         <div className="flex items-center gap-2" role="group" aria-label="Reading period">
-          <div className="inline-flex p-1 rounded-full border hairline bg-surface" role="tablist">
+          <div className="inline-flex p-1 rounded-lg border hairline bg-background/40" role="tablist">
             {TABS.map((t) => (
               <button
                 key={t.key}
                 role="tab"
                 aria-selected={period === t.key}
                 onClick={() => setPeriod(t.key)}
-                className={`relative px-3 md:px-4 py-1.5 text-xs md:text-sm rounded-full transition-smooth focus-ring ${
-                  period === t.key ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                className={`relative px-3 md:px-4 py-1.5 text-xs md:text-sm rounded-md transition-colors focus-ring ${
+                  period === t.key ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {t.label}
@@ -110,7 +98,7 @@ export default function HoroscopeDisplay({ sign }: Props) {
           <button
             onClick={onShare}
             disabled={!data}
-            className="grid place-items-center w-9 h-9 rounded-full border hairline hover:bg-secondary transition-smooth focus-ring disabled:opacity-40"
+            className="grid place-items-center w-10 h-10 rounded-md border hairline hover:bg-accent transition-smooth focus-ring disabled:opacity-40"
             aria-label="Share reading"
           >
             <Share2 className="w-4 h-4" />
@@ -131,7 +119,7 @@ export default function HoroscopeDisplay({ sign }: Props) {
           </p>
           <button
             onClick={() => setRevealed(true)}
-            className="group relative inline-flex items-center gap-2 px-6 h-12 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-smooth focus-ring"
+            className="btn-primary h-12 px-6"
             style={{ boxShadow: `0 0 0 1px ${accent}33, 0 18px 50px -18px ${accent}` }}
           >
             <Eye className="w-4 h-4" />
@@ -166,7 +154,7 @@ export default function HoroscopeDisplay({ sign }: Props) {
               {/* Energy + Advice */}
               <EnergyMetricsBar metrics={data?.energy ?? { focus: 0, emotion: 0, luck: 0, social: 0 }} accent={accent} loading={loading || !data} />
 
-              <div className="rounded-2xl border hairline p-5 bg-surface flex items-center justify-between gap-4 flex-wrap">
+              <div className="rounded-xl border hairline p-5 bg-surface flex items-center justify-between gap-4 flex-wrap">
                 <div className="min-w-0 flex-1">
                   <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-1">Cosmic advice</div>
                   <p key={advice} className="text-sm md:text-base text-foreground/90 animate-fade-in">
@@ -175,7 +163,7 @@ export default function HoroscopeDisplay({ sign }: Props) {
                 </div>
                 <button
                   onClick={onAdvice}
-                  className="inline-flex items-center gap-2 h-10 px-4 rounded-full border hairline hover:bg-secondary text-sm transition-smooth focus-ring"
+                  className="inline-flex items-center gap-2 h-10 px-4 rounded-md border hairline hover:bg-accent text-sm transition-smooth focus-ring"
                   aria-label="Get new cosmic advice"
                 >
                   <Wand2 className="w-4 h-4" />
@@ -185,7 +173,7 @@ export default function HoroscopeDisplay({ sign }: Props) {
             </div>
 
             {/* Side panel */}
-            <aside className="rounded-2xl border hairline p-6 bg-surface flex flex-col gap-6">
+            <aside className="rounded-xl border hairline p-6 bg-surface flex flex-col gap-6">
               <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{loading || !data ? "Loading…" : data.date}</div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -210,7 +198,7 @@ function ReadingBlock({
   loading, icon, title, body, accent, large,
 }: { loading: boolean; icon: React.ReactNode; title: string; body?: string; accent: string; large?: boolean }) {
   return (
-    <div className="rounded-2xl border hairline p-5 bg-surface">
+    <div className="rounded-xl border hairline p-5 bg-surface">
       <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground mb-3">
         <span className="grid place-items-center w-6 h-6 rounded-full" style={{ background: `${accent}1f`, color: accent }}>{icon}</span>
         {title}

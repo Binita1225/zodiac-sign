@@ -4,10 +4,10 @@ import { ChevronDown } from "lucide-react";
 export default function DesignPhilosophy() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl border hairline bg-surface/50">
+    <div className="rounded-xl border hairline bg-surface/50">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between p-4 text-sm focus-ring rounded-2xl"
+        className="w-full flex items-center justify-between p-4 text-sm focus-ring rounded-xl"
         aria-expanded={open}
       >
         <span className="text-muted-foreground">

@@ -15,7 +15,7 @@ const LABELS: { key: keyof EnergyMetrics; label: string }[] = [
 
 export default function EnergyMetricsBar({ metrics, accent, loading }: Props) {
   return (
-    <div className="rounded-2xl border hairline p-5 bg-surface">
+    <div className="rounded-xl border hairline p-5 bg-surface">
       <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-4">Energy</div>
       <ul className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4">
         {LABELS.map(({ key, label }, i) => {
